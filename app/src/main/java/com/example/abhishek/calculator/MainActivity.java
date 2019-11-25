@@ -34,11 +34,14 @@ public class MainActivity extends AppCompatActivity {
     private final char SUBTRACTION = '-';
     private final char MULTIPLICATION= '*';
     private final char DIVISION = '/';
+    private final char DOT = '.';
     private final char EQU = '0';
     private char ACTION;
     private double val1 = Double.NaN;
     private double val2;
-
+    private double num;
+    private double count;
+    private String divz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,10 +123,27 @@ public class MainActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(ACTION == EQU){
+                    op.setText(result.getText().toString());
+                    result.setText(null);
+                    ACTION = ADDITION;
+                    val1 = Double.parseDouble(op.getText().toString());
+                    val2 = Double.NaN;
+                }
                 compute();
+                if(!Double.isNaN(val1)) {
+                    divz = String.valueOf(val1);
+                    if (divz.equals("Infinity")) {
+                        op.setText(null);
+                        result.setText("ERROR:DIVISION BY ZERO");
+                        ACTION = 0;
+                        val1 = Double.NaN;
+                        val2 = Double.NaN;
+                    }
+                }
                 ACTION = ADDITION;
                 result.setText(String.valueOf(val1) + '+');
-                op.setText(null);
+                op.setText(" ");
             }
         });
 
@@ -160,14 +180,19 @@ public class MainActivity extends AppCompatActivity {
         eq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ACTION == DIVISION && val2 == 0) {
-                    op.setText("ERROR");
-                    result.setText("DIVISION BY ZERO");
-                }
                 compute();
-                op.setText(result.getText().toString() + String.valueOf(val2) + '=');
-                result.setText(String.valueOf(val1));
-
+                divz = String.valueOf(val1);
+                if(divz.equals("Infinity")){
+                    op.setText(null);
+                    result.setText("ERROR:DIVISION BY ZERO");
+                    ACTION = 0;
+                    val1 = Double.NaN;
+                    val2 = Double.NaN;
+                }
+                else {
+                    op.setText(result.getText().toString() + String.valueOf(val2) + '=');
+                    result.setText(String.valueOf(val1));
+                }
             }
         });
 
@@ -179,6 +204,15 @@ public class MainActivity extends AppCompatActivity {
                 ACTION = 0;
                 val1 = Double.NaN;
                 val2 = Double.NaN;
+            }
+        });
+
+        dot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                op.setText(op.getText().toString() + ".");
+                compute();
+                ACTION = DOT;
             }
         });
 
@@ -237,7 +271,12 @@ public class MainActivity extends AppCompatActivity {
                 case SUBTRACTION: val1 = val1 - val2; break;
                 case MULTIPLICATION: val1 = val1 * val2; break;
                 case DIVISION: val1 = val1 / val2; break;
-                case EQU: val1 = val1 ;break;
+                case DOT: for(num = val2; num > 1; num/=10){
+                    val2 = num;
+                }
+                        val1 = val2;
+                        val2 = Double.NaN;break;
+                case EQU: ACTION = EQU ;break;
             }
         }
         else{
