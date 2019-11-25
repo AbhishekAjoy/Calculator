@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         sub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 compute();
                 ACTION = SUBTRACTION;
                 result.setText(String.valueOf(val1) + '-');
@@ -151,18 +150,21 @@ public class MainActivity extends AppCompatActivity {
         div.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                compute();
-                ACTION = DIVISION;
-                result.setText(String.valueOf(val1) + '/');
-                op.setText(null);
+                    compute();
+                    ACTION = DIVISION;
+                    result.setText(String.valueOf(val1) + '/');
+                    op.setText(null);
             }
         });
 
         eq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ACTION == DIVISION && val2 == 0) {
+                    op.setText("ERROR");
+                    result.setText("DIVISION BY ZERO");
+                }
                 compute();
-                ACTION = EQU;
                 op.setText(result.getText().toString() + String.valueOf(val2) + '=');
                 result.setText(String.valueOf(val1));
 
@@ -174,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 op.setText(null);
                 result.setText(null);
-
+                ACTION = 0;
+                val1 = Double.NaN;
+                val2 = Double.NaN;
             }
         });
 
@@ -233,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 case SUBTRACTION: val1 = val1 - val2; break;
                 case MULTIPLICATION: val1 = val1 * val2; break;
                 case DIVISION: val1 = val1 / val2; break;
-                case EQU: val1 = val1 ; break;
+                case EQU: val1 = val1 ;break;
             }
         }
         else{
